@@ -1,0 +1,13 @@
+{
+  constants {
+    customAbilities(languageId: ENGLISH) {
+      id
+      name
+      abilityName
+      language{
+        displayName
+        description
+      }
+    }
+  }
+}

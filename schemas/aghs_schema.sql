@@ -11,7 +11,7 @@ CREATE TABLE matches (
     numHumanPlayers SMALLINT,
     gameMode SMALLINT,
     replaySalt INTEGER,
-    difficulty VARCHAR(16),
+    difficulty TEXT,
     depth SMALLINT,
     seed INTEGER,
     battlePoints INTEGER,
@@ -75,7 +75,7 @@ CREATE TABLE playerBlessings(
     matchId BIGINT,
     playerSlot SMALLINT,
     steamAccountId BIGINT,
-    type VARCHAR(64),
+    type TEXT,
     value INTEGER,
     PRIMARY KEY(matchId, playerSlot, type),
     FOREIGN KEY(matchId) REFERENCES matches(id),
@@ -86,14 +86,14 @@ CREATE TABLE depthList(
     matchId BIGINT,
     depth SMALLINT,
     selectedElite BOOLEAN,
-    selectedEncounter VARCHAR(64),
+    selectedEncounter TEXT,
     selectedEncounterType SMALLINT,
     selectedHidden BOOLEAN,
-    selectedReward VARCHAR(64),
+    selectedReward TEXT,
     unselectedElite BOOLEAN,
-    unselectedEncounter VARCHAR(64),
+    unselectedEncounter TEXT,
     unselectedHidden BOOLEAN,
-    unselectedReward VARCHAR(64),
+    unselectedReward TEXT,
     PRIMARY KEY(matchId, depth),
     FOREIGN KEY(matchId) REFERENCES matches(id)
 );
@@ -101,10 +101,19 @@ CREATE TABLE depthList(
 CREATE TABLE ascensionAbilities(
     matchId BIGINT,
     depth SMALLINT,
-    type VARCHAR(64),
+    type TEXT,
     abilityId SMALLINT,
     modifierId SMALLINT,
     PRIMARY KEY(matchId, depth, type),
     FOREIGN KEY(matchId) REFERENCES matches(id),
     FOREIGN KEY(matchId, depth) REFERENCES depthList(matchId, depth)
+)
+
+CREATE TABLE abilityConstants(
+    id SMALLINT,
+    name TEXT,
+    abilityName TEXT,
+    displayName TEXT,
+    description TEXT,
+    PRIMARY KEY(id)
 );

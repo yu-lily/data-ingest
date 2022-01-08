@@ -2,6 +2,7 @@ from collections import deque
 import json
 import time
 import os
+import logging
 
 from aghs_matches import AghsMatchesVars, AghsMatchesHandler
 from sql_writer import SQLWriter
@@ -9,6 +10,15 @@ from sql_writer import SQLWriter
 
 class BatchProcessor:
     def __init__(self):
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        logging.basicConfig(
+            level=logging.DEBUG,
+            handlers=[
+                logging.FileHandler(f"logs/{time.strftime('%Y-%m-%d')}.log", 'w', 'utf-8'),
+                logging.StreamHandler()
+            ]
+        )
         window_log_path = "./logs/window_log.json"
         if os.path.exists(window_log_path):
             with open(window_log_path, 'r') as f:
@@ -35,14 +45,14 @@ class BatchProcessor:
                 skip = 0
                 #Check if window has been handled
                 if difficulty in self.window_log.keys():
-                    if start_time in self.window_log[difficulty].keys():
-                        if self.window_log[difficulty][start_time]['reached_end']:
-                            print(f'Window {start_time} has been handled')
+                    if str(start_time) in self.window_log[difficulty].keys():
+                        if self.window_log[difficulty][str(start_time)]['reached_end']:
+                            logging.info(f'Window {start_time} has been fully handled')
                             start_time += WINDOW_SIZE
                             continue
                         else:
-                            skip = self.window_log[difficulty][start_time]['processed']
-                            print(f'Window {start_time} has been partially handled ({skip} already processed)')
+                            skip = self.window_log[difficulty][str(start_time)]['processed']
+                            logging.info(f'Window {start_time} has been partially handled ({skip} already processed)')
 
                 #Construct query variable object
                 query_vars = AghsMatchesVars(
@@ -57,17 +67,20 @@ class BatchProcessor:
                 start_time += WINDOW_SIZE
 
     def process_queue(self, cutoff: int = None):
-
         ctr = 0
         while len(self.processing_queue) > 0:
             timer_start = time.time()
+
             query_vars = self.processing_queue.popleft()
-            print(f'Window {ctr}: {query_vars.difficulty} - {query_vars.createdAfterDateTime} to {query_vars.createdBeforeDateTime}, ', end = '')
+            logging.info(f'Window {ctr}: {query_vars.difficulty} - {query_vars.createdAfterDateTime} to {query_vars.createdBeforeDateTime}')
             matches, next_query = self.aghs_matches_handler.make_query(query_vars)
+
             if next_query:
                 self.processing_queue.append(next_query)
+            
             timer_end = time.time()
-            print(f'Processed {len(matches)} matches in {timer_end - timer_start:.2f} seconds')
+            logging.info(f'Processed {len(matches)} matches in {timer_end - timer_start:.2f} seconds')
+            
             self.save_matches(matches)
             ctr += 1
             if cutoff and ctr >= cutoff:
@@ -79,4 +92,4 @@ class BatchProcessor:
             self.sql_writer.write_to_csv(matches)
             self.sql_writer.write_to_sql()
         timer_end = time.time()
-        print(f'Saved {len(matches)} matches in {timer_end - timer_start:.2f} seconds')
+        logging.info(f'Saved {len(matches)} matches in {timer_end - timer_start:.2f} seconds')

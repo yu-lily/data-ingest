@@ -11,16 +11,22 @@ class QueryHandler(ABC):
         self.apikey = os.getenv('STRATZ_APIKEY')
         self.headers = {'Authorization': 'Bearer ' + self.apikey}
 
-    def make_query(self, variables) -> str:
+    def make_query(self, variables: dict) -> str:
         r = requests.post(ENDPOINT, json={'query': self.query , 'variables': variables}, headers=self.headers)
+
+        rl_s, rl_m, rl_h, rl_d = (r.headers['X-RateLimit-Remaining-Second'],
+        r.headers['X-RateLimit-Limit-Minute'],
+        r.headers['X-RateLimit-Limit-Hour'],
+        r.headers['X-RateLimit-Limit-Day'])
 
         #Log that the request was made
         ts = int(time.time())
-        log_fpath = './logs/api_call_log.txt'
+        log_fpath = './logs/api_call_log.csv'
         if not os.path.exists(log_fpath):
-            open(log_fpath, 'w').close()
+            with open(log_fpath, 'w') as f:
+                f.write('timestamp,status_code,rl_sec,rl_min,rl_hr,rl_day\n')
         with open(log_fpath, 'a') as f:
-            f.write(f"{ts} {r.status_code}\n")
+            f.write(f"{ts},{r.status_code},{rl_s},{rl_m},{rl_h},{rl_d}\n")
 
         if r.status_code == 200:
             return r.text

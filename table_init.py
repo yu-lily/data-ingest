@@ -5,7 +5,7 @@ class TableInitializer(SQLClient):
     def __init__(self):
         super().__init__()
     
-    def initialize_tables(self, destroy_existing_tables: bool = False, schema_fname: str = "aghs_schema.sql"):
+    def initialize_tables(self, destroy_existing_tables: bool = False, schema_fname: str = "./schemas/aghs_schema.sql"):
         if destroy_existing_tables:
             # #Destroy existing tables
             print("Dropping tables")
@@ -15,6 +15,7 @@ class TableInitializer(SQLClient):
             self.cur.execute("""DROP TABLE IF EXISTS playerBlessings CASCADE;""")
             self.cur.execute("""DROP TABLE IF EXISTS depthList CASCADE;""")
             self.cur.execute("""DROP TABLE IF EXISTS ascenionAbilities CASCADE;""")
+            self.cur.execute("""DROP TABLE IF EXISTS abilityConstants CASCADE;""")
             self.conn.commit()
 
         #Get all tables
