@@ -109,11 +109,30 @@ CREATE TABLE ascensionAbilities(
     FOREIGN KEY(matchId, depth) REFERENCES depthList(matchId, depth)
 )
 
-CREATE TABLE abilityConstants(
+CREATE TABLE const_customAbilites(
     id SMALLINT,
     name TEXT,
     abilityName TEXT,
     displayName TEXT,
     description TEXT,
     PRIMARY KEY(id)
+)
+
+CREATE TABLE const_heroes(
+    id SMALLINT,
+    name TEXT,
+    displayName TEXT,
+    shortName TEXT,
+    aliases TEXT[],
+    PRIMARY KEY(id)
+)
+
+CREATE TABLE const_abilities(
+    abilityId SMALLINT,
+    heroId SMALLINT,
+    slot SMALLINT,
+    name TEXT,
+    displayName TEXT,
+    PRIMARY KEY(abilityId, heroId, slot),
+    FOREIGN KEY(heroId) REFERENCES const_heroes(id)
 );

@@ -1,0 +1,22 @@
+{
+  constants {
+    heroes(language: ENGLISH) {
+      id
+      name
+      displayName
+      shortName
+      aliases
+      abilities {
+        slot
+        abilityId
+        ability {
+          id
+          name
+          language{
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
