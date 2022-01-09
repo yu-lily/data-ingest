@@ -20,6 +20,6 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('cutoff', type=int, nargs='?',
                     help='Number of windows to process (until queue is empty if no input)')
-    
+
     args = parser.parse_args()
     main(args.cutoff)
