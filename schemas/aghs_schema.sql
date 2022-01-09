@@ -107,7 +107,7 @@ CREATE TABLE ascensionAbilities(
     PRIMARY KEY(matchId, depth, type),
     FOREIGN KEY(matchId) REFERENCES matches(id),
     FOREIGN KEY(matchId, depth) REFERENCES depthList(matchId, depth)
-)
+);
 
 CREATE TABLE const_customAbilites(
     id SMALLINT,
@@ -116,7 +116,7 @@ CREATE TABLE const_customAbilites(
     displayName TEXT,
     description TEXT,
     PRIMARY KEY(id)
-)
+);
 
 CREATE TABLE const_heroes(
     id SMALLINT,
@@ -125,7 +125,7 @@ CREATE TABLE const_heroes(
     shortName TEXT,
     aliases TEXT[],
     PRIMARY KEY(id)
-)
+);
 
 CREATE TABLE const_abilities(
     abilityId SMALLINT,
