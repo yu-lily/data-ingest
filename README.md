@@ -19,7 +19,7 @@ POSTGRES_PASS={DB_PASS}
 POSTGRES_PORT={PORT (5342 is the default)}
 ```
 
-`main.py` currently defaults to Aghanim's Labyrinth matches.
+- `main.py` currently defaults to Aghanim's Labyrinth matches.
 ```
 python main.py {MAX_REQUESTS}
 ```
