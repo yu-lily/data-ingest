@@ -136,3 +136,12 @@ CREATE TABLE const_abilities(
     PRIMARY KEY(abilityId, heroId, slot),
     FOREIGN KEY(heroId) REFERENCES const_heroes(id)
 );
+
+CREATE TABLE const_extractedAbilities(
+    name TEXT,
+    localizedName TEXT,
+    description TEXT,
+    abilitySpecial TEXT,
+    textureName TEXT,
+    PRIMARY KEY(name)
+);
