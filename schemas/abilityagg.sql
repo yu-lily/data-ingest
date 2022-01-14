@@ -29,6 +29,6 @@ CREATE TABLE abilityagg AS (
 	JOIN const_customAbilites c_cust_ab ON ab_wr.selectedrewardabilityid = c_cust_ab.id
 	LEFT JOIN const_extractedAbilities c_exc USING(name)
 	WHERE c_cust_ab.name LIKE '%special%'
-	ORDER BY clear_time ASC
+	ORDER BY ability_wr DESC
 );
 SELECT * FROM abilityagg LIMIT 10;
