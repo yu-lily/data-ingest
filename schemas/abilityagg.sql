@@ -15,7 +15,7 @@ CREATE TABLE abilityagg AS (
 	SELECT 
 	c_cust_ab.displayname,
 	c_cust_ab.description,
-	c_cust_ab.id AS ability_id,
+	--c_cust_ab.id AS ability_id,
 	ROUND (ab_wr.wr * 100, 2) AS ability_wr,
 	ROUND (ab_ct.clear_time) * interval '1 sec' AS clear_time,
 	ab_ct.num_clears,
