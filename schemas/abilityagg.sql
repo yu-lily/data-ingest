@@ -6,7 +6,8 @@ CREATE MATERIALIZED VIEW abilityagg AS (
 		JOIN matches m ON p.matchid = m.id
 		GROUP BY p.selectedrewardabilityid
 	), ability_clear_time AS (
-		SELECT p.selectedrewardabilityid, AVG(m.durationSeconds::int) AS clear_time, COUNT(*) AS num_clears
+		SELECT p.selectedrewardabilityid, AVG(m.durationSeconds::int) AS clear_time,
+			MIN(m.durationSeconds::int) AS fastest_clear, COUNT(*) AS num_clears
 		FROM playerdepthlist AS p
 		JOIN matches m ON p.matchid = m.id
 		WHERE m.didwin = true
@@ -14,12 +15,13 @@ CREATE MATERIALIZED VIEW abilityagg AS (
 	)
 	SELECT
 	c_exc.texturename AS icon,
-	c_cust_ab.displayname AS ability_name,
+	c_cust_ab.displayname AS shard,
 	REGEXP_REPLACE(c_exc.description, '\*\*(.*?)\*\*', '<strong>\1</strong>', 'gm') AS description,
 	ROUND (ab_wr.wr * 100, 2) AS winrate,
-	ROUND (ab_ct.clear_time) * interval '1 sec' AS avg_clear_time,
-	ab_ct.num_clears AS total_clears,
-	ab_wr.total_picks
+	ab_ct.num_clears AS clears,
+	ab_wr.total_picks AS picks,
+	ROUND (ab_ct.clear_time) * interval '1 sec' AS speed
+	--ROUND (ab_ct.fastest_clear) * interval '1 sec' AS fastest_clear_time
 	FROM ability_wr ab_wr 
 	JOIN ability_clear_time ab_ct USING(selectedrewardabilityid)
 	JOIN const_customAbilites c_cust_ab ON ab_wr.selectedrewardabilityid = c_cust_ab.id

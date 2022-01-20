@@ -1,17 +1,17 @@
-DROP TABLE IF EXISTS abilityagg_3d;
-CREATE TABLE abilityagg_3d AS (
+DROP TABLE IF EXISTS abilityagg_postpatch;
+CREATE TABLE abilityagg_postpatch AS (
 	WITH ability_wr AS (
 		SELECT p.selectedrewardabilityid, AVG(m.didwin::int) AS wr, COUNT(*) AS total_picks
 		FROM playerdepthlist AS p
 		JOIN matches m ON p.matchid = m.id
-		WHERE m.startdatetime > (CURRENT_DATE - INTERVAL '3 days')
+		WHERE m.startdatetime > to_timestamp(1642542300)
 		GROUP BY p.selectedrewardabilityid
 	), ability_clear_time AS (
 		SELECT p.selectedrewardabilityid, AVG(m.durationSeconds::int) AS clear_time,
 			MIN(m.durationSeconds::int) AS fastest_clear, COUNT(*) AS num_clears
 		FROM playerdepthlist AS p
 		JOIN matches m ON p.matchid = m.id
-		WHERE m.didwin = true AND m.startdatetime > (CURRENT_DATE - INTERVAL '3 days')
+		WHERE m.didwin = true AND m.startdatetime > to_timestamp(1642542300)
 		GROUP BY p.selectedrewardabilityid
 	)
 	SELECT
@@ -30,4 +30,3 @@ CREATE TABLE abilityagg_3d AS (
 	WHERE c_cust_ab.name LIKE '%special%'
 	ORDER BY winrate DESC
 );
-SELECT * FROM abilityagg_3d LIMIT 10;
