@@ -14,6 +14,7 @@ CREATE MATERIALIZED VIEW abilityagg AS (
 		GROUP BY p.selectedrewardabilityid
 	)
 	SELECT
+	c_cust_ab.name,
 	c_exc.texturename AS icon,
 	c_cust_ab.displayname AS shard,
 	REGEXP_REPLACE(c_exc.description, '\*\*(.*?)\*\*', '<strong>\1</strong>', 'gm') AS description,
@@ -22,10 +23,11 @@ CREATE MATERIALIZED VIEW abilityagg AS (
 	ab_wr.total_picks AS picks,
 	ROUND (ab_ct.clear_time) * interval '1 sec' AS speed
 	--ROUND (ab_ct.fastest_clear) * interval '1 sec' AS fastest_clear_time
-	FROM ability_wr ab_wr 
+	FROM ability_wr ab_wr
 	JOIN ability_clear_time ab_ct USING(selectedrewardabilityid)
 	JOIN const_customAbilites c_cust_ab ON ab_wr.selectedrewardabilityid = c_cust_ab.id
 	LEFT JOIN const_extractedAbilities c_exc USING(name)
 	WHERE c_cust_ab.name LIKE '%special%'
 	ORDER BY winrate DESC
 );
+CREATE UNIQUE INDEX ON abilityagg(name);

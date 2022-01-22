@@ -15,3 +15,4 @@ CREATE MATERIALIZED VIEW heroagg AS (
 	FROM agg
 	JOIN const_heroes AS const_h ON agg.heroid = const_h.id
 );
+CREATE UNIQUE INDEX ON heroagg(heroid);

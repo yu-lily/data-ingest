@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS abilityagg_3d;
-CREATE TABLE abilityagg_3d AS (
+DROP MATERIALIZED VIEW IF EXISTS abilityagg_3d;
+CREATE MATERIALIZED VIEW abilityagg_3d AS (
 	WITH ability_wr AS (
 		SELECT p.selectedrewardabilityid, AVG(m.didwin::int) AS wr, COUNT(*) AS total_picks
 		FROM playerdepthlist AS p
@@ -15,6 +15,7 @@ CREATE TABLE abilityagg_3d AS (
 		GROUP BY p.selectedrewardabilityid
 	)
 	SELECT
+	c_cust_ab.name,
 	c_exc.texturename AS icon,
 	c_cust_ab.displayname AS shard,
 	REGEXP_REPLACE(c_exc.description, '\*\*(.*?)\*\*', '<strong>\1</strong>', 'gm') AS description,
@@ -30,4 +31,4 @@ CREATE TABLE abilityagg_3d AS (
 	WHERE c_cust_ab.name LIKE '%special%'
 	ORDER BY winrate DESC
 );
-SELECT * FROM abilityagg_3d LIMIT 10;
+CREATE UNIQUE INDEX ON abilityagg_3d(name);

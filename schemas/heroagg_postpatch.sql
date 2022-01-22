@@ -16,3 +16,4 @@ CREATE MATERIALIZED VIEW heroagg_postpatch AS (
 	FROM agg
 	JOIN const_heroes AS const_h ON agg.heroid = const_h.id
 );
+CREATE UNIQUE INDEX ON heroagg_postpatch(heroid);
