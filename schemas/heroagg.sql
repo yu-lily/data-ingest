@@ -11,7 +11,10 @@ CREATE MATERIALIZED VIEW heroagg AS (
 	)
 	SELECT *,
 	ROUND(agg.winrate * 100, 2) AS rounded_winrate,
-	ROUND (agg.avg_depth * 100, 2) AS rounded_avg_depth
+	ROUND (agg.avg_depth, 2) AS rounded_avg_depth,
+	RANK() OVER(ORDER BY winrate DESC) wr_rank,
+	RANK() OVER(ORDER BY avg_depth DESC) depth_rank,
+	RANK() OVER(ORDER BY times_chosen DESC) popularity_rank
 	FROM agg
 	JOIN const_heroes AS const_h ON agg.heroid = const_h.id
 );
